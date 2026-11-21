@@ -29,8 +29,8 @@ npm run dev                    # http://localhost:3000
 
 | Variable                 | Required          | Purpose |
 | ------------------------ | ----------------- | ------- |
-| `NEXT_PUBLIC_SITE_URL`   | **Yes, in production** | Your live domain, e.g. `https://jinaldodiya.com`. Used for canonical URLs, Open Graph, `sitemap.xml`, `robots.txt` and JSON-LD. Without it those fall back to `http://localhost:3000`. |
-| `CONTACT_WEBHOOK_URL`    | No                | Where contact-form submissions are sent (JSON POST). While empty, the form is visibly disabled and says it isn't connected. |
+| `NEXT_PUBLIC_SITE_URL`   | When you use a custom domain | Your live domain, e.g. `https://jinaldodiya.com`. Used for canonical URLs, Open Graph, `sitemap.xml`, `robots.txt` and JSON-LD. On Vercel it falls back to the project's production domain automatically; elsewhere to `http://localhost:3000`. |
+| `CONTACT_WEBHOOK_URL`    | No                | Where contact-form submissions are sent (JSON POST). While empty, the form opens the visitor's own email app with the message filled in, addressed to the email in `site.ts`. It never claims to have sent anything itself. |
 | `CONTACT_WEBHOOK_SECRET` | No                | Sent as the `X-Webhook-Secret` header so your endpoint can reject forged requests. |
 
 > Pages are prerendered at build time, so **rebuild/redeploy after changing any variable**.
@@ -65,11 +65,34 @@ The rate limit is per server instance (best effort). For strict limits on server
 
 ### Vercel (recommended)
 
-1. Push this folder to a GitHub repository.
-2. In Vercel: **Add New → Project → Import** the repository. Framework preset: **Next.js** (auto-detected). No build settings need changing.
-3. Add environment variables under **Settings → Environment Variables**: `NEXT_PUBLIC_SITE_URL` (and the contact variables when ready).
-4. **Deploy.** Then add your domain under **Settings → Domains**, and set `NEXT_PUBLIC_SITE_URL` to that domain and redeploy.
-5. After launch: submit `https://your-domain/sitemap.xml` in Google Search Console.
+The project is ready for Vercel as-is: no `vercel.json` and no build settings needed.
+
+**Option A: GitHub + Vercel dashboard (easiest to keep updated)**
+
+1. Unzip, open a terminal in the `jinal-portfolio` folder and push it to a new GitHub repo:
+   ```bash
+   git init && git add . && git commit -m "Portfolio"
+   git branch -M main
+   git remote add origin https://github.com/<you>/jinal-portfolio.git
+   git push -u origin main
+   ```
+2. Go to **vercel.com → Add New → Project → Import** that repo. Vercel detects Next.js automatically. Click **Deploy**.
+3. Every later `git push` redeploys automatically.
+
+**Option B: Vercel CLI (no GitHub needed)**
+
+```bash
+cd jinal-portfolio
+npm install
+npx vercel          # log in, accept the defaults → preview URL
+npx vercel --prod   # production URL
+```
+
+**After the first deploy**
+
+- The site URL for SEO tags, sitemap and robots is picked up automatically from Vercel's production domain. When you add your own domain (**Settings → Domains**), also set `NEXT_PUBLIC_SITE_URL=https://your-domain.com` under **Settings → Environment Variables** and redeploy.
+- To switch on the contact form, add `CONTACT_WEBHOOK_URL` (and optionally `CONTACT_WEBHOOK_SECRET`) there and redeploy.
+- Submit `https://your-domain/sitemap.xml` in Google Search Console.
 
 ### Any Node host (VPS, Render, Railway, Hostinger Node, etc.)
 
@@ -147,7 +170,7 @@ Typography: Plus Jakarta Sans (display, `font-display`) + Inter (body, `font-san
 | Item | Where it goes | Current state |
 | --- | --- | --- |
 | Profile photo | `public/profile/jinal-photo.webp` (square-ish, ≥800px) | Labelled "JD" placeholder |
-| Personal email, phone, WhatsApp, LinkedIn, GitHub | `src/data/site.ts → contact` | "To be added" placeholders |
+| WhatsApp number, GitHub | `src/data/site.ts → contact` | Hidden until added (email, phone and LinkedIn are set) |
 | Resume PDF | `public/resume/jinal-dodiya-resume.pdf` | Download button hidden until the file exists; printable `/resume` page works now |
 | Screenshots: Robusto Cases, Parekh Eye Clinic, EventVexa Android, Sage, RayFuel | `public/projects/<name>/` + `images` in `projects.ts` | Labelled placeholders |
 | Confirmed tech stack per project | `stack: []` in `projects.ts` | Section hidden until filled |
@@ -155,12 +178,12 @@ Typography: Plus Jakarta Sans (display, `font-display`) + Inter (body, `font-san
 | Tools awaiting confirmation (Google Ads, Meta Ads Manager, GSC, GA, Figma, Canva, video editor, Emergent, Play Console) | `src/data/skills.ts → tools` | Shown separately as "Awaiting confirmation" |
 | GROW Children Hospital SEO responsibility | `src/data/seo.ts → growSeo.seoRoleConfirmed` | `false`: the figures are shown as monitoring data, not attributed |
 | Performance-marketing case study | `projects.ts` | None published; capability says so |
-| Production domain | `NEXT_PUBLIC_SITE_URL` | Not set |
+| Custom domain | `NEXT_PUBLIC_SITE_URL` | Not set (Vercel domain used automatically) |
 
 ## 9. Content decisions worth knowing
 
 - **Screenshots** are the ones supplied in November 2026. The two CRM/workflow images are cropped to the public marketing half of the sign-in page: the demo accounts and credentials visible on the live pages are **not** included. One line of unfinished placeholder copy ("[TRIAL LENGTH]") on the live Rayspur page is covered in its cover image, and the capture stops before the pricing section, which also contains placeholders. The EventVexa capture has the Windows taskbar cropped off.
 - **Features** listed on case studies come only from what a supplied source shows. Each list names its source.
 - **SEO figures** are copied from the Ubersuggest reports, labelled as tracked rankings (not traffic, enquiries or ROI), with declines and limitations shown.
-- **Experience:** "4+ years" is self-reported; the Raybotix start date (11 Dec 2020) is shown exactly. By those dates the tenure is closer to 6 years, so update `experienceLabel` in `site.ts` if you want them to match.
+- **Experience:** Raybotix Digital start date is **December 2022** (`src/data/experience.ts`). "4+ years" (`experienceLabel` in `site.ts`) is the self-reported total relevant experience; tenure at Raybotix alone is just under 4 years as of Nov 2026.
 - **EventVexa** web and Android are cross-linked as one product with two deliverables.

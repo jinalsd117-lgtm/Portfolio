@@ -18,7 +18,7 @@ contact: {
 },
 ```
 
-`null` shows a visible "To be added" chip. Filled values become links across the footer, contact page and resume. LinkedIn and GitHub are also added to the Person structured data (`sameAs`).
+`null` hides that channel. Filled values become links across the footer, contact page and resume. LinkedIn and GitHub are also added to the Person structured data (`sameAs`).
 
 Also editable here: hero eyebrow, title and description, `experienceLabel` ("4+ years"), location, nav items.
 
@@ -108,7 +108,7 @@ These numbers are **tracked keyword rankings**, never traffic, enquiries, sales 
 
 ## Experience & timeline — `src/data/experience.ts`
 
-- `experience`: job entries. Keep dates exact (`start: "2020-12-11"`, `end: null` = Present). Edit `responsibilities` freely, but don't add team sizes or leadership claims you can't back up.
+- `experience`: job entries. Keep dates exact (`start: "2022-12-01"`, `end: null` = Present). Edit `responsibilities` freely, but don't add team sizes or leadership claims you can't back up.
 - `education`: add `institution` and `year` to show them on About and the resume.
 - `timeline`: home-page entries. Only dated facts get a date; undated items use a label like "Education".
 
